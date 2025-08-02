@@ -1,1 +1,37 @@
+name: Lint, Test & Deploy                # Name of the GitHub Actions workflow
+on: push                                 # Trigger workflow on every push to the repository
+jobs:                                    # Define jobs to run in the workflow
+  lint:                                  # First job: lint
+    runs-on: ubuntu-latest               # Use the latest Ubuntu runner
+    steps:                               # Steps to execute in the lint job
+      - uses: actions/checkout@v3        # Checkout the repository code
+      - name: Set up Node.js             # Step name: Set up Node.js
+        uses: actions/setup-node@v3      # Use the official Node.js setup action
+        with:                            # Specify options for the setup-node action
+          node-version: '18'             # Set Node.js version to 18
+      - run: npm install                 # Install dependencies
+      - run: npm run lint                # Run the linter
 
+  test:                                  # Second job: test
+    runs-on: ubuntu-latest               # Use the latest Ubuntu runner
+    needs: lint                          # Run this job after the lint job completes
+    steps:                               # Steps to execute in the test job
+      - uses: actions/checkout@v3        # Checkout the repository code
+      - name: Set up Node.js             # Step name: Set up Node.js
+        uses: actions/setup-node@v3      # Use the official Node.js setup action
+        with:                            # Specify options for the setup-node action
+          node-version: '18'             # Set Node.js version to 18
+      - run: npm install                 # Install dependencies
+      - run: npm test                    # Run tests
+
+  deploy:                                # Third job: deploy
+    runs-on: ubuntu-latest               # Use the latest Ubuntu runner
+    needs: test                          # Run this job after the test job completes
+    steps:                               # Steps to execute in the deploy job
+      - uses: actions/checkout@v3        # Checkout the repository code
+      - name: Set up Node.js             # Step name: Set up Node.js
+        uses: actions/setup-node@v3      # Use the official Node.js setup action
+        with:                            # Specify options for the setup-node action
+          node-version: '18'             # Set Node.js version to 18
+      - run: npm install                 # Install dependencies
+      - run: echo "Deploying application..." # Placeholder for deployment command
